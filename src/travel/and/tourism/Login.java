@@ -1,14 +1,14 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
+
 package travel.and.tourism;
 import java.awt.*;
+import java.awt.event.*;
 import javax.swing.*;
 import javax.swing.border.*;
+import java.sql.*;
 
-public class Login extends JFrame {
-    
+public class Login extends JFrame implements ActionListener {
+    JButton login, password,signup;
+    JTextField tfusername, tfpassword;
     Login(){
         setSize(900,400);
         setLocation(600,300);
@@ -39,41 +39,44 @@ public class Login extends JFrame {
         un.setFont(new Font("SAN_SERIF",Font.PLAIN,20));
         p2.add(un);
         
-        JTextField tun = new JTextField();
-        tun.setBounds(60,60,300,30);
-        tun.setBorder(BorderFactory.createEmptyBorder());
-        p2.add(tun);
+        tfusername = new JTextField();
+        tfusername.setBounds(60,60,300,30);
+        tfusername.setBorder(BorderFactory.createEmptyBorder());
+        p2.add(tfusername);
         //
         JLabel pass = new JLabel("Password");
         pass.setBounds(60,130,100,25);
         pass.setFont(new Font("SAN_SERIF",Font.PLAIN,20));
         p2.add(pass);
         
-        JTextField tup = new JTextField();
-        tup.setBounds(60,170,300,30);
-        tup.setBorder(BorderFactory.createEmptyBorder());
-        p2.add(tup);
+        tfpassword = new JTextField();
+        tfpassword.setBounds(60,170,300,30);
+        tfpassword.setBorder(BorderFactory.createEmptyBorder());
+        p2.add(tfpassword);
         
-        JButton login = new JButton("Login");
+        login = new JButton("Login");
         login.setBounds(60,220,130,30);
         login.setBackground(new Color(133,193,233));
         login.setForeground(Color.WHITE);
         login.setBorder(new LineBorder(new Color(133,193,233)));
+        login.addActionListener(this);
         p2.add(login);
         
-        JButton signup = new JButton("Signup");
+        signup = new JButton("Signup");
         signup.setBounds(220,220,130,30);
         signup.setBackground(new Color(133,193,233));
         signup.setForeground(Color.WHITE);
         signup.setBorder(new LineBorder(new Color(133,193,233)));
+        signup.addActionListener(this);
         p2.add(signup);
         
-        JButton fp = new JButton("Forget Password");
-        fp.setBounds(150,260,130,30);
-        fp.setBackground(new Color(133,193,233));
-        fp.setForeground(Color.WHITE);
-        fp.setBorder(new LineBorder(new Color(133,193,233)));
-        p2.add(fp);
+        password = new JButton("Forget Password");
+        password.setBounds(150,260,130,30);
+        password.setBackground(new Color(133,193,233));
+        password.setForeground(Color.WHITE);
+        password.setBorder(new LineBorder(new Color(133,193,233)));
+        password.addActionListener(this);
+        p2.add(password);
         
         JLabel text = new JLabel("Trouble In login...");
         text.setBounds(330,260,150,20);
@@ -83,7 +86,37 @@ public class Login extends JFrame {
         setVisible(true);
     }
     
+    public void actionPerformed(ActionEvent ae){
+        if(ae.getSource() == login){
+            try{
+            String username = tfusername.getText();
+            String pass = tfpassword.getText();
+            
+            String query = "select * from account where username = '"+username+"'AND password = '"+pass+"'";
+            Conn c = new Conn();
+            
+            ResultSet rs =c.s.executeQuery(query);
+            if(rs.next()){
+                setVisible(false);
+                new Loading(username
+                );
+            }else{
+                JOptionPane.showMessageDialog(null, "Incorrect username or password");
+            }
+            }catch(Exception e){
+            e.printStackTrace();
+        }
+        }else if(ae.getSource() == signup){
+            setVisible(false);
+            new Signup();
+        }else{
+            setVisible(false);
+            new ForgetPassword();
+        }
+    }
+    
+    
     public static void main(String[] args){
-        Login l = new Login(); 
+        new Login(); 
     }
 }
